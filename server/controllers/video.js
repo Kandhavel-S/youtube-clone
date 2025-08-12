@@ -24,6 +24,7 @@ export const uploadvideo = async (req, res) => {
     }
   }
 };
+
 export const getallvideo = async (req, res) => {
   try {
     const files = await video.find();

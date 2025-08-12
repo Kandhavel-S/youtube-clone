@@ -2,6 +2,7 @@ import Comments from "@/components/Comments";
 import RelatedVideos from "@/components/RelatedVideos";
 import VideoInfo from "@/components/VideoInfo";
 import Videopplayer from "@/components/Videopplayer";
+import { useTheme } from "@/components/ThemeProvider";
 import axiosInstance from "@/lib/axiosinstance";
 import { notFound } from "next/navigation";
 import { useRouter } from "next/router";
@@ -9,6 +10,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 const index = () => {
   const router = useRouter();
+  const { theme } = useTheme();
   const { id } = router.query;
   const [videos, setvideo] = useState<any>(null);
   const [video, setvide] = useState<any>(null);
@@ -60,14 +62,43 @@ const index = () => {
   //   },
   // ];
   if (loading) {
-    return <div>Loading..</div>;
+    return (
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+        theme === 'dark' 
+          ? 'bg-gray-900 text-white' 
+          : 'bg-white text-gray-900'
+      }`}>
+        <div className={`text-center ${
+          theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+        }`}>
+          Loading...
+        </div>
+      </div>
+    );
   }
   
   if (!videos) {
-    return <div>Video not found</div>;
+    return (
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${
+        theme === 'dark' 
+          ? 'bg-gray-900 text-white' 
+          : 'bg-white text-gray-900'
+      }`}>
+        <div className={`text-center ${
+          theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+        }`}>
+          Video not found
+        </div>
+      </div>
+    );
   }
+  
   return (
-    <div className="min-h-screen bg-white">
+    <div className={`min-h-screen transition-colors duration-300 ${
+      theme === 'dark' 
+        ? 'bg-gray-900 text-white' 
+        : 'bg-white text-gray-900'
+    }`}>
       <div className="max-w-7xl mx-auto p-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-4">

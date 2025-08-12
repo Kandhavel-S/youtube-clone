@@ -1,4 +1,4 @@
-import { Bell, Menu, Mic, Search, User, VideoIcon } from "lucide-react";
+import { Bell, Menu, Mic, Search, User, VideoIcon, Users, Sun, Moon, Crown } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -12,11 +12,14 @@ import {
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Channeldialogue from "./channeldialogue";
+import OTPVerification from "./OTPVerification";
 import { useRouter } from "next/router";
 import { useUser } from "@/lib/AuthContext";
+import { useTheme } from "./ThemeProvider";
 
 const Header = () => {
-  const { user, logout, handlegooglesignin } = useUser();
+  const { user, logout, handlegooglesignin, otpData, handleOTPVerificationSuccess, clearOTPData } = useUser();
+  const { theme, setTheme, userLocation } = useTheme();
   // const user: any = {
   //   id: "1",
   //   name: "John Doe",
@@ -38,7 +41,11 @@ const Header = () => {
     }
   };
   return (
-    <header className="flex items-center justify-between px-4 py-2 bg-white border-b">
+    <header className={`flex items-center justify-between px-4 py-2 border-b transition-colors duration-300 ${
+      theme === 'dark' 
+        ? 'bg-gray-900 border-gray-700 text-white' 
+        : 'bg-white border-gray-200 text-black'
+    }`}>
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon">
           <Menu className="w-6 h-6" />
@@ -50,7 +57,9 @@ const Header = () => {
             </svg>
           </div>
           <span className="text-xl font-medium">YourTube</span>
-          <span className="text-xs text-gray-400 ml-1">IN</span>
+          <span className="text-xs text-gray-400 ml-1">
+            {userLocation.state ? userLocation.state.slice(0, 2).toUpperCase() : 'IN'}
+          </span>
         </Link>
       </div>
       <form
@@ -68,7 +77,11 @@ const Header = () => {
           />
           <Button
             type="submit"
-            className="rounded-r-full px-6 bg-gray-50 hover:bg-gray-100 text-gray-600 border border-l-0"
+            className={`rounded-r-full px-6 border border-l-0 ${
+              theme === 'dark'
+                ? 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+                : 'bg-gray-50 hover:bg-gray-100 text-gray-600'
+            }`}
           >
             <Search className="w-5 h-5" />
           </Button>
@@ -78,8 +91,30 @@ const Header = () => {
         </Button>
       </form>
       <div className="flex items-center gap-2">
+        {/* Theme toggle button */}
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+          className={`transition-colors ${
+            theme === 'dark' 
+              ? 'text-gray-300 hover:text-white hover:bg-gray-700' 
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+          }`}
+        >
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </Button>
+        
         {user ? (
           <>
+            {/* Groups quick access */}
+            <Link href="/groups">
+              <Button variant="ghost" size="icon" title="Groups">
+                <Users className="w-6 h-6" />
+              </Button>
+            </Link>
+            
             <Button variant="ghost" size="icon">
               <VideoIcon className="w-6 h-6" />
             </Button>
@@ -115,6 +150,14 @@ const Header = () => {
                     </Button>
                   </div>
                 )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/groups" className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Groups
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/history">History</Link>
                 </DropdownMenuItem>
@@ -123,6 +166,13 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/watch-later">Watch later</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/subscription" className="flex items-center gap-2">
+                    <Crown className="w-4 h-4" />
+                    Subscription Plans
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout}>Sign out</DropdownMenuItem>
@@ -146,6 +196,19 @@ const Header = () => {
         onclose={() => setisdialogeopen(false)}
         mode="create"
       />
+      
+      {/* OTP Verification Dialog */}
+      {otpData && (
+        <OTPVerification
+          isOpen={!!otpData}
+          onClose={clearOTPData}
+          email={otpData.email}
+          otpMethod={otpData.otpMethod}
+          onVerificationSuccess={(userData, token) => {
+            handleOTPVerificationSuccess(userData, token || otpData.token);
+          }}
+        />
+      )}
     </header>
   );
 };

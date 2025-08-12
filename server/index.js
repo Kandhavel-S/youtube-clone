@@ -9,9 +9,17 @@ import likeroutes from "./routes/like.js";
 import watchlaterroutes from "./routes/watchlater.js";
 import historyrroutes from "./routes/history.js";
 import commentroutes from "./routes/comment.js";
+import grouproutes from "./routes/group.js";
+import channelSubscriptionroutes from "./routes/channelSubscription.js";
+import subscriptionroutes from "./routes/subscription.js";
+import cashfreeSubscriptionroutes from "./routes/cashfreeSubscription.js";
 dotenv.config();
 const app = express();
 import path from "path";
+
+// Trust proxy for getting real IP addresses
+app.set('trust proxy', true);
+
 app.use(cors());
 app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
@@ -26,6 +34,10 @@ app.use("/like", likeroutes);
 app.use("/watch", watchlaterroutes);
 app.use("/history", historyrroutes);
 app.use("/comment", commentroutes);
+app.use("/group", grouproutes);
+app.use("/channel-subscription", channelSubscriptionroutes);
+app.use("/subscription", subscriptionroutes);
+app.use("/cashfree-subscription", cashfreeSubscriptionroutes);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

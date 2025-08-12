@@ -4,6 +4,7 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@/lib/AuthContext";
+import { useTheme } from "./ThemeProvider";
 import axiosInstance from "@/lib/axiosinstance";
 interface Comment {
   _id: string;
@@ -14,12 +15,13 @@ interface Comment {
   commentedon: string;
 }
 const Comments = ({ videoId }: any) => {
+  const { user } = useUser();
+  const { theme } = useTheme();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
-  const { user } = useUser();
   const [loading, setLoading] = useState(true);
   const fetchedComments = [
     {
@@ -124,7 +126,9 @@ const Comments = ({ videoId }: any) => {
   };
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold">{comments.length} Comments</h2>
+      <h2 className={`text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
+        {comments.length} Comments
+      </h2>
 
       {user && (
         <div className="flex gap-4">
@@ -137,7 +141,11 @@ const Comments = ({ videoId }: any) => {
               placeholder="Add a comment..."
               value={newComment}
               onChange={(e: any) => setNewComment(e.target.value)}
-              className="min-h-[80px] resize-none border-0 border-b-2 rounded-none focus-visible:ring-0"
+              className={`min-h-[80px] resize-none border-0 border-b-2 rounded-none focus-visible:ring-0 ${
+                theme === 'dark' 
+                  ? 'bg-gray-800 text-white placeholder-gray-400 border-gray-600' 
+                  : 'bg-white text-black placeholder-gray-500 border-gray-300'
+              }`}
             />
             <div className="flex gap-2 justify-end">
               <Button
@@ -159,7 +167,7 @@ const Comments = ({ videoId }: any) => {
       )}
       <div className="space-y-4">
         {comments.length === 0 ? (
-          <p className="text-sm text-gray-500 italic">
+          <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} italic`}>
             No comments yet. Be the first to comment!
           </p>
         ) : (
@@ -171,10 +179,10 @@ const Comments = ({ videoId }: any) => {
               </Avatar>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-sm">
+                  <span className={`font-medium text-sm ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                     {comment.usercommented}
                   </span>
-                  <span className="text-xs text-gray-600">
+                  <span className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                     {formatDistanceToNow(new Date(comment.commentedon))} ago
                   </span>
                 </div>
@@ -184,6 +192,11 @@ const Comments = ({ videoId }: any) => {
                     <Textarea
                       value={editText}
                       onChange={(e) => setEditText(e.target.value)}
+                      className={`${
+                        theme === 'dark' 
+                          ? 'bg-gray-800 text-white border-gray-600' 
+                          : 'bg-white text-black border-gray-300'
+                      }`}
                     />
                     <div className="flex gap-2 justify-end">
                       <Button
@@ -205,13 +218,21 @@ const Comments = ({ videoId }: any) => {
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm">{comment.commentbody}</p>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+                      {comment.commentbody}
+                    </p>
                     {comment.userid === user?._id && (
-                      <div className="flex gap-2 mt-2 text-sm text-gray-500">
-                        <button onClick={() => handleEdit(comment)}>
+                      <div className={`flex gap-2 mt-2 text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                        <button 
+                          onClick={() => handleEdit(comment)}
+                          className={`hover:${theme === 'dark' ? 'text-white' : 'text-black'}`}
+                        >
                           Edit
                         </button>
-                        <button onClick={() => handleDelete(comment._id)}>
+                        <button 
+                          onClick={() => handleDelete(comment._id)}
+                          className={`hover:${theme === 'dark' ? 'text-red-400' : 'text-red-600'}`}
+                        >
                           Delete
                         </button>
                       </div>
