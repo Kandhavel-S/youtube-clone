@@ -27,9 +27,3 @@ services:
         sync: false
       - key: FIREBASE_API_KEY
         sync: false
-      - key: CASHFREE_APP_ID
-        sync: false
-      - key: CASHFREE_SECRET_KEY
-        sync: false
-      - key: CASHFREE_ENV
-        sync: false

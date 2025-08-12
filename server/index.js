@@ -12,7 +12,6 @@ import commentroutes from "./routes/comment.js";
 import grouproutes from "./routes/group.js";
 import channelSubscriptionroutes from "./routes/channelSubscription.js";
 import subscriptionroutes from "./routes/subscription.js";
-import cashfreeSubscriptionroutes from "./routes/cashfreeSubscription.js";
 dotenv.config();
 const app = express();
 import path from "path";
@@ -37,7 +36,6 @@ app.use("/comment", commentroutes);
 app.use("/group", grouproutes);
 app.use("/channel-subscription", channelSubscriptionroutes);
 app.use("/subscription", subscriptionroutes);
-app.use("/cashfree-subscription", cashfreeSubscriptionroutes);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

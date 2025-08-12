@@ -10,23 +10,23 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// Subscription plans configuration
+// Subscription plans configuration (TEST MODE PRICES)
 const PLANS = {
   bronze: { 
     name: 'Bronze', 
-    price: 10, 
+    price: 1, // ₹1 for testing
     duration: 30, // 30 days
     watchTimeLimit: 7 // 7 minutes per video
   },
   silver: { 
     name: 'Silver', 
-    price: 50, 
+    price: 2, // ₹2 for testing
     duration: 30, 
     watchTimeLimit: 10 // 10 minutes per video
   },
   gold: { 
     name: 'Gold', 
-    price: 100, 
+    price: 3, // ₹3 for testing
     duration: 30, 
     watchTimeLimit: -1 // unlimited
   }
