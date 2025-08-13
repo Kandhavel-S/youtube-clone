@@ -10,23 +10,23 @@ const razorpay = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
-// Subscription plans configuration (TEST MODE PRICES)
+// Subscription plans configuration
 const PLANS = {
   bronze: { 
     name: 'Bronze', 
-    price: 1, // ₹1 for testing
+    price: 10, // ₹10
     duration: 30, // 30 days
     watchTimeLimit: 7 // 7 minutes per video
   },
   silver: { 
     name: 'Silver', 
-    price: 2, // ₹2 for testing
+    price: 50, // ₹50
     duration: 30, 
     watchTimeLimit: 10 // 10 minutes per video
   },
   gold: { 
     name: 'Gold', 
-    price: 3, // ₹3 for testing
+    price: 100, // ₹100
     duration: 30, 
     watchTimeLimit: -1 // unlimited
   }
@@ -240,14 +240,14 @@ export const getSubscriptionStatus = async (req, res) => {
 
     const planDetails = PLANS[user.subscriptionPlan] || { 
       name: 'Free', 
-      watchTimeLimit: 5 // 5 minutes for free plan
+      watchTimeLimit: 5 // 5 minutes per video for free plan
     };
 
     res.status(200).json({
       success: true,
       subscription: {
-        plan: user.subscriptionPlan,
-        status: user.subscriptionStatus,
+        plan: user.subscriptionPlan || 'free',
+        status: user.subscriptionStatus || 'active',
         expiry: user.subscriptionExpiry,
         watchTimeLimit: planDetails.watchTimeLimit,
         monthlyWatchTime: user.monthlyWatchTime

@@ -2,12 +2,19 @@ services:
   - type: web
     name: youtube-clone-backend
     env: node
+    region: oregon # Choose your preferred region
+    plan: starter # Free tier
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 10000
       - key: DB_URL
+        sync: false # You'll set this in Render dashboard
+      - key: JWT_SECRET
         sync: false
       - key: TWILIO_ACCOUNT_SID
         sync: false
@@ -18,8 +25,6 @@ services:
       - key: EMAIL_USER
         sync: false
       - key: EMAIL_PASSWORD
-        sync: false
-      - key: JWT_SECRET
         sync: false
       - key: RAZORPAY_KEY_ID
         sync: false

@@ -19,7 +19,19 @@ import path from "path";
 // Trust proxy for getting real IP addresses
 app.set('trust proxy', true);
 
-app.use(cors());
+// CORS configuration for production
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://your-frontend-domain.vercel.app', // Replace with your actual frontend URL
+    'https://youtube-clone-frontend.vercel.app' // Add your deployed frontend URL here
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 app.use("/uploads", express.static(path.join("uploads")));
